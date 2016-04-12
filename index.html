@@ -1,0 +1,56 @@
+<!doctype html>
+<html ng-app="App">
+  <head>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-sanitize.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.1.js"></script>
+    <script src="example.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+<div ng-app='App'>
+  
+  <script type="text/ng-template" id="optionsTemplate.html">
+    <a href tabindex="-1">
+      <span class="qf-option-type">{{match.label.type}}:</span>
+      <span class="qf-option-value"
+        ng-bind-html="match.label.value | uibTypeaheadHighlight:query"
+        ng-attr-title="{{match.label.value}}">
+      </span>
+    </a>
+  </script>
+  
+    <div ng-controller="AppController">
+      
+      <div class="form-control qf-form-control">
+        <span class="qf-parameter btn btn-default btn-xs"
+            ng-repeat="parameter in parameters track by $index"
+            ng-class="{ 'qf-parameter-highlighted': parameter.highlighted }"
+            tabindex="0"
+            ng-keydown="removeParameterOnBackspace($event,$index)">
+          <span class="close" ng-click="removeParameter($index)">&nbsp;x</span>
+          <span class="qf-option-type">{{parameter.type}}: </span>
+          <span class="qf-option-value">{{parameter.value}}</span>
+        </span>
+        <input type="text"
+          ng-model="selected"
+          tab-index="0"
+          ng-keydown="highlightNextParameter($event)"
+          uib-typeahead="option for option in options | filter:{value: $viewValue} | limitTo:8"
+          class="qf-input"
+          typeahead-template-url="optionsTemplate.html"
+          typeahead-wait-ms="1"
+          typeahead-on-select="onSelect($item)">
+      </div>
+      
+      <div>
+        {{parameters}}
+      </div>
+      
+    </div>
+</div>
+  </body>
+</html>
