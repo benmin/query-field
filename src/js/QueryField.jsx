@@ -363,7 +363,17 @@ var QueryField = React.createClass({
             filteredOptions = this.filterOptions(newValue, this.state.options);
         }
         
-//        this.refs.menu.initActive();
+        // update the activeIndex if needed
+        if(filteredOptions.length === 0) {
+            this.refs.menu.setState({
+                activeIndex: 0
+            });
+        } else if(this.refs.menu.state.activeIndex >= filteredOptions.length) {
+            console.log('index out of bounds');
+            this.refs.menu.setState({
+                activeIndex: filteredOptions.length - 1
+            });
+        }
         
         // update state
         this.setState({
@@ -375,6 +385,7 @@ var QueryField = React.createClass({
     
     onKeyDown: function(event) {
         if(event.keyCode === KEYS.BACKSPACE && !this.state.inputValue) {
+            console.log('backspace');
             var len = this.state.parameters.length;
 
             if(len > 0) {
