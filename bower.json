@@ -1,0 +1,16 @@
+{
+    "name": "query-field",
+    "description": "A search field, for filtering a list/grid/etc on multiple parameters at once.",
+    "license": "https://raw.githubusercontent.com/benmin/query-field/master/LICENSE",
+    "keywords": ["query","search","filter","field"],
+    "authors": ["GooeyWizard"],
+    "repository": "https://github.com/benmin/query-field.git",
+    "dependencies": {
+        "bootstrap": "~3.3.6",
+        "react": "~15.3.0",
+        "react-bootstrap": "~0.30.7"
+    },
+    "devDependencies": {
+        "babel": "~5.8.38"
+    }
+}
