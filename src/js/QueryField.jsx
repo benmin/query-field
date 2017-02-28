@@ -232,21 +232,28 @@ var QueryField = React.createClass({
     
     removeParameter: function(index) {
         var params = this.state.parameters;
+        console.log('params len = ', params.length);
         params.splice(index,1);
+        console.log('params len again = ', params.length);
         
         this.setState({
             parameters: params
         });
+        
+        this.filterItems();
     },
     
     filterItems: function() {
+        console.log('params = ', this.state.parameters);
         var items = this.props.items,
             queryParameters = this.state.parameters,
             filtered = [],
             i, j, param, item, match;
         
+        console.log('songs list = ', this.props.items);
+        
         if(queryParameters.length === 0) {
-          return items;
+            this.props.filterItems(items);
         }
 
         for(i = 0; i < items.length; i++) {
@@ -298,6 +305,8 @@ var QueryField = React.createClass({
             filtered.push(item);
           }
         }
+        
+        console.log('filtered songs = ', filtered);
 
         this.props.filterItems(filtered);
         
@@ -472,30 +481,48 @@ var queryOptions = [{
     });
   }
 
-var filteredSongs = localSongs;
-
-var filterSongs = function(songs) {
-    console.log(songs);
-    filteredSongs = songs;
-};
+var ExampleList = React.createClass({
+    displayName: 'ExampleList',
+    
+    getInitialState: function() {
+        return {
+            songs: localSongs
+        };
+    },
+    
+    filterSongs: function(songs) {
+        console.log('filtered songs', songs);
+        this.setState({
+            songs: songs
+        });
+    },
+    
+    render: function() {
+        return (
+            <div>
+                <QueryField options={queryOptions} items={localSongs} filterItems={this.filterSongs} />
+                {this.state.songs.map(function(song, i) {
+                    return (
+                        <div key={i}>
+                            <div>{song.title}</div>
+                            <div>{song.author}</div>
+                            <div>
+                                {song.labels.map(function(label, i) {
+                                    return <span key={i}>{label}</span>
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+});
 
 ReactDOM.render(
     (
         <div>
-            <QueryField options={queryOptions} items={localSongs} filterItems={filterSongs} />
-            {filteredSongs.map(function(song, i) {
-                return (
-                    <div key={i}>
-                        <div>{song.title}</div>
-                        <div>{song.author}</div>
-                        <div>
-                            {song.labels.map(function(label, i) {
-                                return <span key={i}>{label}</span>
-                            })}
-                        </div>
-                    </div>
-                );
-            })}
+            <ExampleList />
         </div>
     ),
     document.getElementById('query-field')
