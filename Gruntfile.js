@@ -20,9 +20,9 @@
 module.exports = function (grunt) {
 
 	// load all grunt modules
-	require('load-grunt-tasks')(grunt);
+    require('load-grunt-tasks')(grunt);
 	
-	grunt.initConfig({
+    grunt.initConfig({
 //		meta: {
 //			jsFilesForTesting: [
 //				'bower_components/jquery/jquery.js',
@@ -47,16 +47,9 @@ module.exports = function (grunt) {
 //	      }
 //		},
 	
-	    connect: {
-	      server: {
-	        options: {
-	          port: 8080,
-	          hostname: '*',
-                keepalive: true,
-	          base: ['bower_components','src']
-	        }
-	      }
-	    },
+        
+        
+        
 	
 //	    watch: {
 //	      wait: {
@@ -200,6 +193,105 @@ module.exports = function (grunt) {
 //	            }]
 //	        }
 //		}
+        
+        connect: {
+            dev: {
+                options: {
+                    port: 8080,
+                    hostname: '*',
+                    keepalive: true,
+                    base: ['bower_components','src']
+                }
+            },
+            prod: {
+                options: {
+                    port: 8080,
+                    hostname: '*',
+                    keepalive: true,
+                    base: ['bower_components','dist']
+                }
+            }
+        },
+        
+        browserify: {
+            options: {
+                browserifyOptions: {
+                    extensions: ['.jsx']
+                },
+                transform: [
+                    ['babelify', {presets: ['es2015','react']}]
+                ]
+            },
+            build: {
+                src: ['src/jsx/*.jsx'],
+                dest: 'dist/js/query-field.js'
+            }
+        },
+        
+        cssmin: {
+            build: {
+                files: {
+                    'dist/style.min.css': ['dist/css/style.css']
+                }
+            }
+		},
+        
+		processhtml: {
+			build: {
+				files: {
+					'dist/index.html': ['dist/index.html'],
+				}
+			}
+		},
+        
+		clean: {
+			all: {
+				src: ['dist']
+			},
+			js: {
+				src: ['dist/js','dist/jsx']
+			},
+			css: {
+				src: ['dist/css']
+			}
+		},
+        
+        copy: {
+            all: {
+                files: [{
+                    cwd: 'src',
+                    src: ['**','!jsx/**'],
+                    dest: 'dist',
+                    expand: true
+                }]
+            }
+		},
+        
+		uglify: {
+			build: {
+				options: {
+					mangle: true
+				},
+				files: {
+					'dist/query-field.min.js': ['dist/js/query-field.js']
+				}
+			}
+		},
+        
+        postcss: {
+		    options: {
+		    	map: true,
+		    	processors: [
+	                require('autoprefixer')({
+	                	browsers: ['last 3 versions']
+	                })
+		        ]
+		    },
+		    build: {
+		        src: 'dist/css/**/*.css'
+		    }
+		}
+        
 	});
 
 //	grunt.registerTask('test', ['karma:development']);
@@ -211,5 +303,13 @@ module.exports = function (grunt) {
 //	grunt.registerTask('run-prod', ['express:prod','watch:prod']);
 //	grunt.registerTask('rebuild-run', ['build-src','run-prod']);
 //    grunt.registerTask('run', ['express:dev','keepalive']);
-    grunt.registerTask('dev-run', ['connect']);
+    grunt.registerTask('dev-run', ['connect:dev']);
+    
+    grunt.registerTask('build-jsx', ['browserify:build']);
+    grunt.registerTask('build-css', ['cssmin:build']);
+    grunt.registerTask('build-html', ['processhtml:build']);
+    
+    grunt.registerTask('prod-build', ['clean:all','copy:all','build-jsx','uglify:build','clean:js','postcss:build','build-css','clean:css','build-html']);
+    grunt.registerTask('prod-run', ['connect:prod']);
+    grunt.registerTask('prod-build-run', ['prod-build','prod-run']);
 };

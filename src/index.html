@@ -1,20 +1,29 @@
 <html>
 
 <head>
+    
     <script src="react/react.js"></script>
     <script src="react/react-dom.js"></script>
+    <!-- build:remove -->
     <script src="babel/browser.js"></script>
+    <!-- /build -->
     
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- build:css style.min.css -->
     <link href="css/style.css" rel="stylesheet">
+    <!-- /build -->
+    
 </head>
 
 <body>
 
     <div id="query-field"></div>
-    <script src="js/QueryField.jsx" type="text/babel"></script>
     
-</body>    
+    <!-- build:js query-field.min.js -->
+    <script src="jsx/QueryField.jsx" type="text/babel"></script>
+    <!-- /build -->
+    
+</body>
 
 </html>
